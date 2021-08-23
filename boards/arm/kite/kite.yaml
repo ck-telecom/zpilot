@@ -1,0 +1,15 @@
+identifier: kite
+name: KITE
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+ram: 20
+flash: 128
+supported:
+  - gpio
+  - spi
+  - pwm
+  - i2c

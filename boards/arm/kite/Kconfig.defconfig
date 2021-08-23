@@ -1,0 +1,10 @@
+# kite board configuration
+
+# Copyright (c) 2021 gouqs@hotmail.com.
+# SPDX-License-Identifier: Apache-2.0
+
+if BOARD_KITE
+
+config BOARD
+	default "kite"
+endif # BOARD_KITE
