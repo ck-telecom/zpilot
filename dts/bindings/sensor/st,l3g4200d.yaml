@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: Apache-2.0
+
+description: This is a representation of the st,l3g4200d gyroscope sensor
+
+compatible: "st,l3g4200d"
+
+include: spi-device.yaml
+
+properties:
+            irq-gpios:
+                      type: phandle-array
+                      required: false
