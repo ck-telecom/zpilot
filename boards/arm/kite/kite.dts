@@ -69,21 +69,21 @@
 	status = "okay";
 	clock-frequency = <I2C_BITRATE_FAST>;
 
-	lsm303dlhc_magn@1e {
+	lsm303dlhc_magn: lsm303dlhc_magn@1e {
 		compatible = "st,lsm303dlhc-magn";
 		reg = <0x1E>;
 		label = "MAGNETOMETER";
 		// irq-gpios = <&gpioc 14 GPIO_ACTIVE_LOW>;
 	};
 
-	lsm303dlhc_accel@18 {
-		compatible = "st,lsm303dlhc-accel";
+	lsm303dlh_accel: lsm303dlh_accel@18 {
+		compatible = "st,lsm303dlh-accel";
 		reg = <0x18>;
 		label = "ACCELEROMETER";
 		irq-gpios = <&gpioc 13 GPIO_ACTIVE_LOW>;
 	};
 
-	bmp085@77 {
+	bmp085: bmp085@77 {
 		compatible = "bosch,bmp085";
 		reg = <0x77>;
 		label = "BAROMETER";
