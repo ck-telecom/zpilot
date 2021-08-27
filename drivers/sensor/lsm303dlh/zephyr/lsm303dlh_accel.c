@@ -61,7 +61,7 @@ static int lsm303dlhc_channel_get(const struct device *dev,
 	struct lsm303dlhc_accel_data *drv_data = dev->data;
 
 	switch (chan) {
-	case  SENSOR_CHAN_ACCEL_X:
+	case SENSOR_CHAN_ACCEL_X:
 		lsm303dlhc_convert(val, drv_data->accel_x);
 		break;
 	case SENSOR_CHAN_ACCEL_Y:
@@ -97,34 +97,27 @@ static int lsm303dlhc_accel_init(const struct device *dev)
 			    config->i2c_name);
 		return -ENODEV;
 	}
-#if 0
-	/* Set magnetometer output data rate */
-	if (i2c_reg_write_byte(drv_data->i2c,
+
+	/* Set accelerometer output data rate */
+	if (i2c_reg_update_byte(drv_data->i2c,
 			       config->i2c_address,
-			       LSM303DLHC_CRA_REG_M,
-			       LSM303DLHC_MAGN_ODR_BITS) < 0) {
+			       LSM303DLH_CTRL_REG1_A,
+			       LSM303DLH_ACCEL_ODR_MASK,
+			       LSM303DLH_ACCEL_ODR_BITS) < 0) {
 		LOG_ERR("Failed to configure chip.");
 		return -EIO;
 	}
 
-	/* Set magnetometer full scale range */
-	if (i2c_reg_write_byte(drv_data->i2c,
+	/* Set accelerometer full scale range */
+	if (i2c_reg_update_byte(drv_data->i2c,
 			       config->i2c_address,
-			       LSM303DLHC_CRB_REG_M,
-			       LSM303DLHC_MAGN_FS_BITS) < 0) {
+			       LSM303DLH_CTRL_REG4_A,
+			       LSM303DLH_ACCEL_RANGE_MASK,
+			       LSM303DLH_ACCEL_RANGE_BITS) < 0) {
 		LOG_ERR("Failed to set magnetometer full scale range.");
 		return -EIO;
 	}
 
-	/* Continuous update */
-	if (i2c_reg_write_byte(drv_data->i2c,
-			       config->i2c_address,
-			       LSM303DLHC_MR_REG_M,
-			       LSM303DLHC_accel_CONT_UPDATE) < 0) {
-		LOG_ERR("Failed to enable continuous data update.");
-		return -EIO;
-	}
-#endif
 	return 0;
 }
 
