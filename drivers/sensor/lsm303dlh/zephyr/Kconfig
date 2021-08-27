@@ -22,7 +22,7 @@ config LSM303DLH_ACCEL_RANGE
 
 config LSM303DLH_ACCEL_ODR
 	int "Data rate frequency"
-	depends on LSM303DLHC_ACCEL
+	depends on LSM303DLH_ACCEL
 	range 0 3
 	default 0
 	help
