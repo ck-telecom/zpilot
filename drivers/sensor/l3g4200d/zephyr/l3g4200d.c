@@ -29,6 +29,19 @@ static inline int l3g4200d_reboot(const struct device *dev)
 	return 0;
 }
 
+static inline int l3g4200d_enable(const struct device *dev)
+{
+	struct l3g4200d_data *data = dev->data;
+
+	if (data->hw_tf->update_reg(dev, L3G4200D_CTRL_REG1,
+				L3G4200D_MASK_CTRL1_C_PD,
+				L3G4200D_CTRL1_PD_NORMAL) < 0) {
+		return -EIO;
+	}
+
+	return 0;
+}
+
 static int l3g4200d_sample_fetch_gyro(const struct device *dev)
 {
 	struct l3g4200d_data *data = dev->data;
@@ -47,6 +60,24 @@ static int l3g4200d_sample_fetch_gyro(const struct device *dev)
 	data->gyro_sample_z = (int16_t)((uint16_t)(buf[4]) |
 				((uint16_t)(buf[5]) << 8));
 #endif
+
+	return 0;
+}
+
+static int l3g4200d_attr_set(const struct device *dev,
+			    enum sensor_channel chan,
+			    enum sensor_attribute attr,
+			    const struct sensor_value *val)
+{
+	switch (chan) {
+	case SENSOR_CHAN_ACCEL_XYZ:
+		//return lsm6dsl_accel_config(dev, chan, attr, val);
+	case SENSOR_CHAN_GYRO_XYZ:
+		//return lsm6dsl_gyro_config(dev, chan, attr, val);
+	default:
+		LOG_WRN("attr_set() not supported on this channel.");
+		return -ENOTSUP;
+	}
 
 	return 0;
 }
@@ -105,6 +136,10 @@ static int l3g4200d_channel_get(const struct device *dev,
 }
 
 static const struct sensor_driver_api l3g4200d_driver_api = {
+	.attr_set = l3g4200d_attr_set,
+#if CONFIG_L3G4200D_TRIGGER
+	.trigger_set = l3g4200d_trigger_set,
+#endif
 	.sample_fetch = l3g4200d_sample_fetch,
 	.channel_get = l3g4200d_channel_get,
 };
@@ -112,7 +147,7 @@ static const struct sensor_driver_api l3g4200d_driver_api = {
 static int l3g4200d_init_chip(const struct device *dev)
 {
 	struct l3g4200d_data *data = dev->data;
-	const struct l3g4200d_config *config = dev->config;
+	// const struct l3g4200d_config *config = dev->config;
 	uint8_t chip_id;
 
 	if (l3g4200d_reboot(dev) < 0) {
@@ -130,6 +165,11 @@ static int l3g4200d_init_chip(const struct device *dev)
 	}
 
 	LOG_INF("chip id 0x%x", chip_id);
+
+	if (l3g4200d_enable(dev) < 0) {
+		LOG_ERR("failed enable normal mode");
+		return -EIO;
+	};
 	return 0;
 }
 
@@ -219,6 +259,7 @@ static int l3g4200d_init(const struct device *dev)
 			.slave = DT_INST_REG_ADDR(inst),		\
 			.cs = L3G4200D_SPI_CS_PTR(inst),			\
 		},							\
+		.cs_gpios_label = L3G4200D_SPI_CS_LABEL(inst),		\
 	})
 
 #ifdef CONFIG_L3G4200D_TRIGGER
