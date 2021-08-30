@@ -53,17 +53,11 @@ menu "Attributes"
 
 config L3G4200D_GYRO_FS
 	int "Gyroscope full-scale range"
-	default 0
+	default 250
 	help
 	  Specify the default gyroscope full-scale range.
 	  An X value for the config represents a range of +/- X degree per
-	  second. Valid values are:
-	  0:  Full Scale selected at runtime
-	  125:   +/- 125dps
-	  245:   +/- 245dps
-	  500:   +/- 500dps
-	  1000:  +/- 1000dps
-	  2000:  +/- 2000dps
+	  second. Valid values are 250, 500, 2000
 
 config L3G4200D_GYRO_ODR
 	int "Gyroscope Output data rate frequency"
