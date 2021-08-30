@@ -45,7 +45,7 @@ static inline int l3g4200d_enable(const struct device *dev)
 static int l3g4200d_sample_fetch_gyro(const struct device *dev)
 {
 	struct l3g4200d_data *data = dev->data;
-	const struct l3g4200d_config *config = dev->config;
+
 	uint8_t buf[6];
 
 	if (data->hw_tf->read_data(dev, L3G4200D_OUT_X_L,
@@ -115,14 +115,14 @@ static inline void l3g4200d_gyro_convert(struct sensor_value *val, int raw_val,
 
 	/* Sensitivity is exposed in mdps/LSB */
 	/* Convert to rad/s */
-	//dval = (double)(raw_val * sensitivity * SENSOR_DEG2RAD_DOUBLE / 1000);
-	//val->val1 = (int32_t)dval;
-	//val->val2 = (((int32_t)(dval * 1000)) % 1000) * 1000;
+	dval = (double)(raw_val * sensitivity * SENSOR_DEG2RAD_DOUBLE / 1000);
+	val->val1 = (int32_t)dval;
+	val->val2 = (((int32_t)(dval * 1000)) % 1000) * 1000;
 }
 
 static inline int l3g4200d_gyro_get_channel(enum sensor_channel chan,
 					   struct sensor_value *val,
-					   struct lsm6dsl_data *data,
+					   struct l3g4200d_data *data,
 					   float sensitivity)
 {
 	switch (chan) {
@@ -149,13 +149,13 @@ static inline int l3g4200d_gyro_get_channel(enum sensor_channel chan,
 
 static int l3g4200d_gyro_channel_get(enum sensor_channel chan,
 				    struct sensor_value *val,
-				    struct lsm6dsl_data *data)
+				    struct l3g4200d_data *data)
 {
 	return l3g4200d_gyro_get_channel(chan, val, data,
 					L3G4200D_DEFAULT_GYRO_SENSITIVITY);
 }
 
-static int l3g4200d_gyro_get_channel(const struct device *dev,
+static int l3g4200d_channel_get(const struct device *dev,
 			       enum sensor_channel chan,
 			       struct sensor_value *val)
 {
@@ -168,11 +168,7 @@ static int l3g4200d_gyro_get_channel(const struct device *dev,
 	case SENSOR_CHAN_GYRO_XYZ:
 		l3g4200d_gyro_channel_get(chan, val, data);
 		break;
-#if defined(CONFIG_l3g4200d_ENABLE_TEMP)
-	case SENSOR_CHAN_DIE_TEMP:
-		l3g4200d_gyro_channel_get_temp(val, data);
-		break;
-#endif
+
 	default:
 		return -ENOTSUP;
 	}
