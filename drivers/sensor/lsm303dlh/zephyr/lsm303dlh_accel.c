@@ -18,40 +18,33 @@ static int lsm303dlhc_sample_fetch(const struct device *dev,
 	uint8_t accel_buf[6];
 	uint8_t status;
 
-	/* Check data ready flag */
-	if (i2c_reg_read_byte(drv_data->i2c,
-			      config->i2c_address,
-			      LSM303DLH_STATUS_REG_A,
-			      &status) < 0) {
-		LOG_ERR("Failed to read status register.");
-		return -EIO;
-	}
-/*
-	if (!(status & LSM303DLHC_MAGN_DRDY)) {
-		LOG_ERR("Sensor data not available.");
-		return -EIO;
-	}
-*/
-	if (i2c_burst_read(drv_data->i2c,
-			   config->i2c_address,
-			   LSM303DLH_OUT_X_L_A,
-			   accel_buf, 6) < 0) {
-		LOG_ERR("Could not read accel axis data.");
-		return -EIO;
-	}
+	i2c_reg_read_byte(drv_data->i2c, config->i2c_address, LSM303DLH_OUT_X_L_A, &accel_buf[0]);
+	i2c_reg_read_byte(drv_data->i2c, config->i2c_address, LSM303DLH_OUT_X_H_A, &accel_buf[1]);
+	i2c_reg_read_byte(drv_data->i2c, config->i2c_address, LSM303DLH_OUT_Y_L_A, &accel_buf[2]);
+	i2c_reg_read_byte(drv_data->i2c, config->i2c_address, LSM303DLH_OUT_Y_H_A, &accel_buf[3]);
+	i2c_reg_read_byte(drv_data->i2c, config->i2c_address, LSM303DLH_OUT_Z_L_A, &accel_buf[4]);
+	i2c_reg_read_byte(drv_data->i2c, config->i2c_address, LSM303DLH_OUT_Z_H_A, &accel_buf[5]);
 
-	drv_data->accel_x = (accel_buf[0] << 8) | accel_buf[1];
-	drv_data->accel_y = (accel_buf[4] << 8) | accel_buf[5];
-	drv_data->accel_z = (accel_buf[2] << 8) | accel_buf[3];
+	drv_data->accel_x = (accel_buf[1] << 8) | accel_buf[0];
+	drv_data->accel_y = (accel_buf[3] << 8) | accel_buf[2];
+	drv_data->accel_z = (accel_buf[5] << 8) | accel_buf[4];
 
+	LOG_INF("%d %d %d", drv_data->accel_x, drv_data->accel_y, drv_data->accel_z);
 	return 0;
 }
 
 static void lsm303dlhc_convert(struct sensor_value *val,
 			       int64_t raw_val)
 {
-//	val->val1 = raw_val / LSM303DLHC_MAGN_LSB_GAUSS;
-//	val->val2 = (1000000 * raw_val / LSM303DLHC_MAGN_LSB_GAUSS) % 1000000;
+//	double dval;
+
+//	dval = (double)(raw_val) * 2.0 * SENSOR_G / 32768.0;
+//val->val1 = (int32_t)dval;
+//	val->val2 = ((int32_t)(dval * 1000000)) % 1000000;
+	raw_val = (raw_val * SENSOR_G) / (0x8000 / 2);
+//	raw_val = raw_val * 2  * SENSOR_G / 0x8000;
+	val->val1 = raw_val / 1000000;
+	val->val2 = raw_val % 1000000;
 }
 
 static int lsm303dlhc_channel_get(const struct device *dev,
@@ -97,7 +90,7 @@ static int lsm303dlhc_accel_init(const struct device *dev)
 			    config->i2c_name);
 		return -ENODEV;
 	}
-
+#if 0
 	/* Set accelerometer output data rate */
 	if (i2c_reg_update_byte(drv_data->i2c,
 			       config->i2c_address,
@@ -117,7 +110,15 @@ static int lsm303dlhc_accel_init(const struct device *dev)
 		LOG_ERR("Failed to set magnetometer full scale range.");
 		return -EIO;
 	}
-
+#endif
+	if (i2c_reg_update_byte(drv_data->i2c,
+			       config->i2c_address,
+			       LSM303DLH_CTRL_REG1_A,
+			       LSM303DLH_ACCEL_PM_MASK,
+			       LSM303DLH_ACCEL_PM_BITS) < 0) {
+		LOG_ERR("Failed to set magnetometer full scale range.");
+		return -EIO;
+	}
 	return 0;
 }
 
