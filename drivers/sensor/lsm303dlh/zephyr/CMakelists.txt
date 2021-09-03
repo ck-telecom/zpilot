@@ -3,4 +3,4 @@
 zephyr_library()
 
 zephyr_include_directories(.)
-zephyr_sources_ifdef(CONFIG_LSM303DLH_ACCEL lsm303dlh_accel.c)
+zephyr_library_sources_ifdef(CONFIG_LSM303DLH_ACCEL lsm303dlh_accel.c)
