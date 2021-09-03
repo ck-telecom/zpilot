@@ -116,7 +116,7 @@ static int lsm303dlhc_accel_init(const struct device *dev)
 			       LSM303DLH_CTRL_REG1_A,
 			       LSM303DLH_ACCEL_PM_MASK,
 			       LSM303DLH_ACCEL_PM_BITS) < 0) {
-		LOG_ERR("Failed to set magnetometer full scale range.");
+		LOG_ERR("Failed to set lsm3030dlh full scale range.");
 		return -EIO;
 	}
 	return 0;
