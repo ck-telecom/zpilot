@@ -228,7 +228,7 @@ static int l3g4200d_init(const struct device *dev)
 	config->bus_init(dev);
 
 	if (l3g4200d_init_chip(dev) < 0) {
-		LOG_DBG("failed to initialize chip");
+		LOG_ERR("failed to initialize chip");
 		return -EIO;
 	}
 
