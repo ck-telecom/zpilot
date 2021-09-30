@@ -1,20 +1,22 @@
 Overview
 ********
-zephyr based AHRS
+zephyr based pilot and UAVs
 
-Hardware
-********
-MCU: stm32f103cbt6
-
-GYROSCOPE: l3g4200d
-
-ACCEL + MAGN : LSM303DLH
-
-BAROMETER: bmp085
+support board
+*************
+moon
+kite
+cc3d
+naze32
+SP Racing F3 series(Acro, Deluxe)
+F3-v3-pro
+revo
+revo mini
 
 Building and flash
 ********************
 ```
-west build -p auto -b kite .
+west build -p auto -b <board> .
+
 west flash
 ```
