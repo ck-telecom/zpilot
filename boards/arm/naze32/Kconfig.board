@@ -1,0 +1,8 @@
+# cc3d board configuration
+
+# Copyright (c) 2021 gouqs@hotmail.com.
+# SPDX-License-Identifier: Apache-2.0
+
+config BOARD_NAZE32
+	bool "naze32"
+	depends on SOC_STM32F103XB

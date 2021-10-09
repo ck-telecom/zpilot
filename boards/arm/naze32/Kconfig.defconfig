@@ -1,0 +1,10 @@
+# kite board configuration
+
+# Copyright (c) 2021 gouqs@hotmail.com.
+# SPDX-License-Identifier: Apache-2.0
+
+if BOARD_NAZE32
+
+config BOARD
+	default "naze32"
+endif # BOARD_NAZE32
