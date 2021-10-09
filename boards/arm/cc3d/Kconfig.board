@@ -1,0 +1,8 @@
+# cc3d board configuration
+
+# Copyright (c) 2021 gouqs@hotmail.com.
+# SPDX-License-Identifier: Apache-2.0
+
+config BOARD_CC3D
+	bool "cc3d"
+	depends on SOC_STM32F103XB
