@@ -44,6 +44,7 @@
 		led0 = &green_led_1;
 		led2 = &green_led_2;
 		sw0 = &user_button;
+		pwm-servo = &pwm3;
 	};
 };
 
@@ -126,12 +127,13 @@
 	};
 };
 
-&timers1 {
+&timers3 {
 	status = "okay";
 
-	pwm1: pwm {
+	pwm3: pwm {
 		status = "okay";
-		pinctrl-0 = <&tim1_ch1_pwm_pa8>;
+		label = "PWM3";
+		pinctrl-0 = <&tim3_ch1_pwm_pa6 &tim3_ch2_pwm_pa7 &tim3_ch3_pwm_pb0 &tim3_ch4_pwm_pb1>;
 	};
 };
 
