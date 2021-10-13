@@ -44,13 +44,19 @@ void pwm_thread(void)
 	int ret;
 
 	printk("Servomotor control\n");
-
+#if 0
 	pwm = DEVICE_DT_GET(PWM_NODE);
 	if (!device_is_ready(pwm)) {
 		printk("Error: PWM device %s is not ready\n", pwm->name);
 		return;
 	}
-
+#else
+	pwm = device_get_binding(DT_LABEL(PWM_NODE));
+	if (!pwm) {
+		printk("Error: PWM device %s open error\n", DT_LABEL(PWM_NODE));
+		return;
+	}
+#endif
 	while (1) {
 		ret = pwm_pin_set_usec(pwm, 0, PERIOD_USEC, pulse_width, 0);
 		if (ret < 0) {
