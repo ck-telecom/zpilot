@@ -20,7 +20,7 @@ static void uart_rx_isr(const struct device *dev, void *user_data)
 		uart_fifo_read(dev, &c, 1);
 
 		while (k_msgq_put(&mavlink_uart_msgq, &c, K_NO_WAIT) != 0) {
-			k_msgq_purge(&mavlink_uart_msgq); //???
+			k_msgq_purge(&mavlink_uart_msgq);
 		}
 	}
 }
@@ -34,7 +34,7 @@ int telemetry_init(const struct device *dev)
 	}
 	/* setup serial */
 	uart_irq_rx_disable(uart_dev);
-	uart_irq_tx_disable(uart_dev);
+	//uart_irq_tx_disable(uart_dev);
 	// flush();
 	uart_irq_callback_user_data_set(uart_dev, uart_rx_isr, NULL);
 	uart_irq_rx_enable(uart_dev);
