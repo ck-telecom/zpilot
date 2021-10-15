@@ -11,6 +11,11 @@ list(APPEND ZEPHYR_EXTRA_MODULES ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sensor/lsm3
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(zpilot)
 
+# mavlink v2 library header files
+target_include_directories(app PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/libs/c_library_v2/standard)
+
 target_sources(app PRIVATE src/main.c)
 target_sources(app PRIVATE src/sensor.c)
 target_sources(app PRIVATE src/pwm.c)
+
+target_sources(app PRIVATE src/telemetry/telemetry.c)
