@@ -1,6 +1,9 @@
 #include <drivers/uart.h>
 #include <logging/log.h>
+
 #include "mavlink.h"
+
+#define MAVLINK_USE_CONVENIENCE_FUNCTIONS 1
 
 #define MAVLINK_COM_DEV "UART_3"
 
@@ -10,6 +13,8 @@
 LOG_MODULE_REGISTER(telemetry, LOG_LEVEL_DBG);
 
 K_MSGQ_DEFINE(mavlink_uart_msgq, sizeof(uint8_t), 32, 4);
+
+static const struct device *uart_dev = NULL;
 
 static void uart_rx_isr(const struct device *dev, void *user_data)
 {
@@ -27,7 +32,7 @@ static void uart_rx_isr(const struct device *dev, void *user_data)
 
 int telemetry_init(const struct device *dev)
 {
-	const struct device *uart_dev = device_get_binding(MAVLINK_COM_DEV);
+	uart_dev = device_get_binding(MAVLINK_COM_DEV);
 	if (!uart_dev) {
 		LOG_ERR("can not open uart device: %s", MAVLINK_COM_DEV);
 		return -ENODEV;
@@ -46,6 +51,12 @@ SYS_INIT(telemetry_init, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT);
 int mavlink_get_char(uint8_t *c)
 {
 	return k_msgq_get(&mavlink_uart_msgq, c, K_FOREVER);
+}
+
+static void comm_send_ch(mavlink_channel_t chan, uint8_t ch)
+{
+	if (uart_dev)
+		uart_poll_out(uart_dev, (unsigned char)ch);
 }
 
 void telemetry_rx_thread()
