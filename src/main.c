@@ -16,7 +16,7 @@
 #define EVT_10HZ        BIT(4)
 #define EVT_1HZ         BIT(5)
 
-K_EVENT_DEFINE(worker_event, 0, 1);
+static K_EVENT_DEFINE(worker_event);
 #endif
 
 
@@ -30,7 +30,7 @@ void main(void)
 		if (events = k_event_wait(&worker_event,
 				   EVT_500HZ | EVT_200HZ |
 				   EVT_100HZ | EVT_50HZ | EVT_10HZ,
-				   false, K_WAIT_FOREVER) {
+				   false, K_FOREVER)) {
 			if (events & EVT_500HZ) {
 
 			}
