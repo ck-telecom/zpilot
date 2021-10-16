@@ -133,6 +133,7 @@
 
 	pwm2: pwm {
 		status = "okay";
+		st,prescaler = <71>;
 		pinctrl-0 = <&tim2_ch1_pwm_pa0 &tim2_ch2_pwm_pa1 &tim2_ch3_pwm_pa2 &tim2_ch4_pwm_pa3>;
 	};
 };
@@ -142,6 +143,7 @@
 
 	pwm3: pwm {
 		status = "okay";
+		st,prescaler = <71>;
 		pinctrl-0 = <&tim3_ch1_pwm_pa6 &tim3_ch2_pwm_pa7 &tim3_ch3_pwm_pb0 &tim3_ch4_pwm_pb1>;
 	};
 };
@@ -151,6 +153,7 @@
 
 	pwm4: pwm {
 		status = "okay";
+		st,prescaler = <71>;
 		pinctrl-0 = <&tim4_ch3_pwm_pb8 &tim4_ch4_pwm_pb9>;
 	};
 };
