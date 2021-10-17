@@ -1,3 +1,5 @@
+#include <kernel.h>
+
 #include "event_period.h"
 #ifdef EVENT_LISTENER
 static struct k_mutex mutex;
@@ -72,10 +74,24 @@ void geventSendEvent(struct event_listener *psl) {
 
 static sys_slist_t event_period_list[EVENT_PERIOD_MAX] = { 0 };//SYS_SLIST_STATIC_INIT(&event_period_list);
 
-static
-event_period_register_cb(enum event_period, struct event_period_node *e)
+static struct k_spinlock lock;
+
+void event_period_register_cb(enum event_period, struct event_period_node *e)
 {
+	k_spinlock_key_t key;
 	sys_slist_t *head = &event_period_list[event_period];
-//locker
+
+	key = k_spin_lock(&lock);
 	sys_slist_append(head, &e->node);
+	k_spin_unlock(&lock, key);
+}
+
+void event_period_unregister_cb(enum event_period, struct event_period_node *e)
+{
+	k_spinlock_key_t key;
+	sys_slist_t *head = &event_period_list[event_period];
+
+	key = k_spin_lock(&lock);
+	sys_slist_find_and_remove(head, &e->node);
+	k_spin_unlock(&lock, key);
 }

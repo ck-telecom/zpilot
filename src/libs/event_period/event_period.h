@@ -47,6 +47,8 @@ enum event_period {
 	EVENT_PERIOD_MAX
 };
 
-event_period_register_cb(enum event_period, struct event_period_node *node);
+void event_period_register_cb(enum event_period, struct event_period_node *node);
+
+void event_period_unregister_cb(enum event_period, struct event_period_node *e);
 
 #endif /* _EVENT_PERIOD_H */
